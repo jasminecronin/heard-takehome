@@ -14,18 +14,11 @@ interface Transaction {
 
 function App() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  // const [amount, setAmount] = useState("");
-  const [isOverlayOpen, setIsOverlayOpen] = useState(false);
-  // const [isOpen, setIsOpen] = useState(false);
-  // const toggleOverlay = useCallback(() => setIsOverlayOpen(open => !open), [setIsOverlayOpen]);
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [isOverlayOpen, setIsOverlayOpen] = useState(false);
   const [isAddMode, setIsAddMode] = useState(false);
 
-  // Read and display all transactions
-  useEffect(() => {
-    axios.get("http://localhost:3001/transactions").then((res) => setTransactions(res.data));
-  }, []);
-
+  // Toggles for dialog box overlay to add/update transactions
   const openAddDialog = () => {
     setSelectedTransaction({
       title: "",
@@ -39,7 +32,18 @@ function App() {
     setIsOverlayOpen(true);
   };
 
-  // Create a new transaction
+  const openUpdateDialog = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+    setIsAddMode(false);
+    setIsOverlayOpen(true);
+  };
+
+  // GET request to fetch all transactions
+  useEffect(() => {
+    axios.get("http://localhost:3001/transactions").then((res) => setTransactions(res.data));
+  }, []);
+
+  // POST request to create a new transaction
   const addTransaction = () => {
       const lastTransaction = transactions[transactions.length - 1];
       // Bit of hacky string manipulation to get the next transaction ID
@@ -52,13 +56,7 @@ function App() {
       });
   };
 
-  const openUpdateDialog = (transaction: Transaction) => {
-    setSelectedTransaction(transaction);
-    setIsAddMode(false);
-    setIsOverlayOpen(true);
-  };
-
-  // Update a transaction with new values
+  // PUT request to update a transaction with new values
   const updateTransaction = () => {
     if (selectedTransaction) {
       axios.put(`http://localhost:3001/transactions/${selectedTransaction.title}`, selectedTransaction).then((res) => {
@@ -69,9 +67,11 @@ function App() {
     }
   };
 
-  // Delete a transaction
+  // DELETE request to delete a transaction
   const deleteTransaction = (title: string) => {
     axios.delete(`http://localhost:3001/transactions/${title}`).then(() => {
+      // This will update the frontend regardless of the success of the delete request
+      // Using a subscription model would be better for a production app
       setTransactions(transactions.filter((t) => t.title !== title));
     });
   };
@@ -91,7 +91,7 @@ function App() {
             <div className={styles.tableHeader}>From</div>
             <div className={styles.tableHeader}>To</div>
             <div className={styles.tableHeader}>Date</div>
-            <div /><div /> {/* empty divs for the update/delete buttons */}
+            <div /><div /> {/* empty divs for the update/delete button columns */}
             {transactions.map((t) => (
               <div key={t.title} className={styles.tableRow}>
                 <div>{t.title}</div>
@@ -173,17 +173,3 @@ function App() {
 }
 
 export default App;
-
-// todos
-// done - fix the typing errors
-// done - style it better
-// done - update the styling to properly display the right format in a table
-// done - update the read function
-// done - add a dialog to add a record with the right fields
-// done - update the add transaction to handle the new fields
-// done - update the front-end to handle record update
-// done - add function to update a transaction
-// done - adjust the styling of delete button
-// done - update the delete transaction to use the right fields so it won't crap out
-// maybe add some basic error handling on the inputs?
-// polish, documentation and comments
