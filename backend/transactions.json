@@ -798,13 +798,5 @@
     "fromAccount": "account_3",
     "toAccount": "account_4",
     "transactionDate": "2023-08-11"
-  },
-  {
-    "title": "transaction_101",
-    "description": "another test",
-    "amount": 4124,
-    "fromAccount": "234",
-    "toAccount": "234",
-    "transactionDate": ""
   }
 ]
