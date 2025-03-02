@@ -17,7 +17,7 @@ app.get("/transactions", (req, res) => {
   });
 });
 
-// Add transaction
+// Add a new transaction
 app.post("/transactions", (req, res) => {
   fs.readFile(DATA_FILE, "utf8", (err, data) => {
     if (err) return res.status(500).json({ error: "Failed to read data" });
@@ -33,7 +33,7 @@ app.post("/transactions", (req, res) => {
   });
 });
 
-// Update transaction
+// Update a transaction
 app.put("/transactions/:title", (req, res) => {
   fs.readFile(DATA_FILE, "utf8", (err, data) => {
     if (err) return res.status(500).json({ error: "Failed to read data" });
@@ -48,7 +48,7 @@ app.put("/transactions/:title", (req, res) => {
   });
 });
 
-// Delete transaction
+// Delete a transaction
 app.delete("/transactions/:id", (req, res) => {
   fs.readFile(DATA_FILE, "utf8", (err, data) => {
     if (err) return res.status(500).json({ error: "Failed to read data" });
